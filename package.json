@@ -1,0 +1,23 @@
+{
+  "name": "bamazon",
+  "version": "1.0.0",
+  "description": "online store",
+  "main": "bamazonCustomer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/angela-andrews/store-front.git"
+  },
+  "author": "Angela Andrews",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/angela-andrews/store-front/issues"
+  },
+  "homepage": "https://github.com/angela-andrews/store-front#readme",
+  "dependencies": {
+    "inquirer": "^6.0.0",
+    "mysql": "^2.16.0"
+  }
+}
