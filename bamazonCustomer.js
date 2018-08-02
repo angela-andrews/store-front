@@ -2,7 +2,8 @@ var mysql = require('mysql');
 var inquirer = require('inquirer');
 var connection = require('./connection.js'); //mysql connection info
 var itemNumber = 0;
-
+var inStock_quantity= 0;
+ 
 connection.connect(function(err) {
   if (err) {
     console.error('error connecting: ' + err.stack);
@@ -11,9 +12,9 @@ connection.connect(function(err) {
    //console.log('connected as id ' + connection.threadId);
    start(); 
 });
-//connection.end(); // here for testing
 
-// List out products table (query)
+ 
+// ============List out products table (query)==============
 function start() {
   connection.query("SELECT * FROM products", (err, res)=>{
     if(err) throw err;
@@ -23,10 +24,10 @@ function start() {
     }
     likeToBuy();
   });
-
+ 
 };
-// ask which item they'd like to buy (inquirer) add function to call select * on item_id
-
+//====== ask which item they'd like to buy (inquirer)=============
+ 
 function likeToBuy(){
   var question = [
     {
@@ -34,67 +35,85 @@ function likeToBuy(){
       name: 'item_id',
       message: "What is the ID of the item you'd like to purchase? \n"
     }
-    
-  ];
+     
+    ];
       inquirer.prompt(question).then(answers => {
         //console.log(JSON.stringify(answers, null, '  '));
         itemNumber = answers.item_id;
-        //function call to query this item passing in item_id
-        //listSingleItem(itemNumber)
-})
- .then(function(){
+        //=========function call to query this item passing in item_id
+        listSingleItem(itemNumber, howMany)
+        })
+}; //end liketoBuy()
+
+ function listSingleItem(id, callback){
     //when the prompt is answered, query the db
-    connection.query("SELECT * FROM products WHERE item_id =?", [itemNumber], (err, res)=>{
+    connection.query("SELECT * FROM products WHERE item_id =?", [id], (err, res)=>{
     //console.log(res);
     for(var i=0; i< res.length; i++){
-    console.log(` Item ID: ${res[i].item_id} || ${res[i].product_name} || ${res[i].price}\n\n`);
+    console.log(`[In Cart]: ${res[i].product_name} || ${res[i].price}\n\n`);
+    //console.log(`Stock quantity from DB for single Item ${res[i].stock_quantity}`);
+    inStock_quantity = res[i].stock_quantity;
     };
     
+     callback()
   });
-   
- });
+    
+ }; //end listSingleItem()
+ 
+ function howMany(){
+    var question = [
+        {
+          type: 'input',
+          name: 'quantity',
+          message: "How many would you like to buy? \n"
+        }
+      ];
+        inquirer.prompt(question).then(answers => {
+          //console.log(JSON.stringify(answers, null, '  '));
+          var qty = answers.quantity;
+          console.log(`Quantity: ${qty}\n`);
+          stockCheck(qty);
+    }); 
+ }; //end howMany()
+  //=============get stock_qty==============
+ function stockCheck(qtyInCart){
+      //console.log(`global var  qty= ${qtyInCart} and I'm in the function where I want to check the stock`);
+        connection.query("SELECT * FROM products WHERE item_id =?", [itemNumber], (err, res)=>{
+        for(var i=0; i< res.length; i++){
+        
+        //console.log(`Stock quantity from DB for single Item ${res[i].stock_quantity}`);
+        inStock_quantity = res[i].stock_quantity;
+        };
+            if(inStock_quantity > qtyInCart){
+               
+                //console.log(`There is enough stock`);
+                //update the DB to change stock_quantity for their item
+                 connection.query("UPDATE products SET stock_quantity=stock_quantity-? WHERE item_id =?", [qtyInCart, itemNumber], (err, res) => {
+                    //console.log(res);
+                    console.log(`-------------`);
+                     connection.query("SELECT * from products WHERE item_id = ?", [itemNumber], (err, res)=>{
+                         //console.log(res);
+                         //Update done, show customer total cost of purchase
+                         console.log(`Your order has been placed:`)
+                         console.log(`Order Details:`)
+                         for(var i=0; i<res.length; i++){
+                            console.log(`${res[i].product_name} \t Quantity: ${qtyInCart} \t Total: $${res[i].price * qtyInCart}`)
+                         };
+                        //  console.log(`${res[0].RowDataPacket.product_name} \t Quantity: ${qtyInCart} \t Total: (${res[0].RowDataPacket.price}*${qtyInCart})`)
+                         connection.end();
+                     })
+                 });
+                
+            } else{
+                console.log(`Insufficient Quantity, Please make another selection\n\n\n`);
+                start();
 
+            }
+        });
+    }//end stockCheck()
 
-}// maybe a then here to run howMany()????
-//list out item_id. use that to  ask how many units they'd like to purchase
-function listSingleItem(id){
-  var query = connection.query("SELECT * FROM products WHERE item_id =?", [id], (err, res)=>{
-    //console.log(res);
-    for(var i=0; i< res.length; i++){
-    console.log(` Item ID: ${res[i].item_id} || ${res[i].product_name} || ${res[i].price}\n\n`);
-    };
-  });
-  //maybe call howMany() and pass in the id for another requery to check quantity
-  
-}
-// howMany(); //having it here makes it call before the intial select.
-// function asking how many units they'd like to buy
-function howMany(){
-  //inquirer
-  var question = [
-    {
-      type: 'input',
-      name: 'quantity',
-      message: "How many would you like to buy? \n"
-    }
-  ];
-    inquirer.prompt(question).then(answers => {
-      //console.log(JSON.stringify(answers, null, '  '));
-      var qty = answers.quantity;
-      console.log(`Quantity: ${qty}`);
-      //function call to query this item passing in item_id
-      //listSingleItem(id);
-});
-  //take the number and re query selectSingleItem passing 
-  
-};
+ 
+    
 
-// function quantityCheck(x){
-//   //requery the item and check the quantity
+ 
 
-//   /*if (stock_quantity >0){
-
-//   }
-//   */
-
-// };
