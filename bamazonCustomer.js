@@ -45,7 +45,7 @@ function likeToBuy(){
         })
 }; //end liketoBuy()
 
- function listSingleItem(id, callback){
+ function listSingleItem(id){
     //when the prompt is answered, query the db
     connection.query("SELECT * FROM products WHERE item_id =?", [id], (err, res)=>{
     //console.log(res);
@@ -55,7 +55,7 @@ function likeToBuy(){
     inStock_quantity = res[i].stock_quantity;
     };
     
-     callback()
+     howMany();
   });
     
  }; //end listSingleItem()
@@ -80,28 +80,23 @@ function likeToBuy(){
       //console.log(`global var  qty= ${qtyInCart} and I'm in the function where I want to check the stock`);
         connection.query("SELECT * FROM products WHERE item_id =?", [itemNumber], (err, res)=>{
         for(var i=0; i< res.length; i++){
-        
-        //console.log(`Stock quantity from DB for single Item ${res[i].stock_quantity}`);
+        var item = res[i].product_name;
+        var price = res[i].price;
+        separator();
+        console.log(`Stock quantity from DB for ${item}: ${res[i].stock_quantity}`);
         inStock_quantity = res[i].stock_quantity;
         };
             if(inStock_quantity > qtyInCart){
                
-                //console.log(`There is enough stock`);
                 //update the DB to change stock_quantity for their item
                  connection.query("UPDATE products SET stock_quantity=stock_quantity-? WHERE item_id =?", [qtyInCart, itemNumber], (err, res) => {
                     //console.log(res);
-                    console.log(`-------------`);
-                     connection.query("SELECT * from products WHERE item_id = ?", [itemNumber], (err, res)=>{
-                         //console.log(res);
-                         //Update done, show customer total cost of purchase
+                    separator();
                          console.log(`Your order has been placed:`)
                          console.log(`Order Details:`)
-                         for(var i=0; i<res.length; i++){
-                            console.log(`${res[i].product_name} \t Quantity: ${qtyInCart} \t Total: $${res[i].price * qtyInCart}`)
-                         };
-                        //  console.log(`${res[0].RowDataPacket.product_name} \t Quantity: ${qtyInCart} \t Total: (${res[0].RowDataPacket.price}*${qtyInCart})`)
+                         console.log(`${item} \t Quantity: ${qtyInCart} \t Total: $${price* qtyInCart}`)
                          connection.end();
-                     })
+                     
                  });
                 
             } else{
@@ -111,7 +106,9 @@ function likeToBuy(){
             }
         });
     }//end stockCheck()
-
+function separator(){
+  console.log(`--------------------------------------------------------------`);
+};
  
     
 

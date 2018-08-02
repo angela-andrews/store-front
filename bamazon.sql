@@ -20,4 +20,5 @@ VALUES ("Aveeno Moisterizer", "Health and Beauty", 11.12,  22), ("Aveeno Face Wa
 ("Kong Squeeze Toy", "Pet Supplies", 9.99,  30), ("Jerky Sticks", "Pet Supplies", 19.97,  7),
 ("Carter's Flannel Blanket", "Baby", 15.99,  21), ("The First Year: Snack Cups", "Baby", 5.32,  14),
 ("Astro 3-Port Portable Charger ", "Cell Phone Accessories", 39.99,  5), ("Yoassi Tea Diffuser", "Kitchen", 11.00,  31),
-("Bose QuietComfort Headphones", "Electronics", 349.00,  8), ("ViewSonic PA503S HDMI Projector", "Electronics", 292.56,  4);
+("Bose QuietComfort Headphones", "Electronics", 349.00,  8), ("The Color Purple", "Books", 9.85, 0),
+("ViewSonic PA503S HDMI Projector", "Electronics", 292.56,  4);
