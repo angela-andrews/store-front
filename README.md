@@ -1,3 +1,5 @@
+![Bamazon Logo](bamazon.png "Bamazon Logo")
+
 # Bamazon Online Store
 
 ## Overview
