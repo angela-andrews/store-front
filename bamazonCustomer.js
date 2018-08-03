@@ -100,6 +100,7 @@ function likeToBuy(){
                  });
                 
             } else{
+              separator();
                 console.log(`Insufficient Quantity, Please make another selection\n\n\n`);
                 start();
 

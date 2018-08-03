@@ -3,39 +3,46 @@ var inquirer = require('inquirer');
 var connection = require('./connection.js'); //mysql connection info
 var products = [];
 
-connection.connect(function(err) {
-    if (err) {
-      console.error('error connecting: ' + err.stack);
-      return;
-    }
-     console.log('connected as id ' + connection.threadId);
-    
-  });
-
-  //create product array
-  function productArray() {
-  connection.query("SELECT * FROM products", (err, res)=>{
-    if(err) throw err;
-    //console.log(JSON.stringify(res, null, 2));
-    for(var i = 0; i < res.length; i++) {
-      console.log(` Item ID: ${res[i].item_id} || ${res[i].product_name} || ${res[i].price} || ${res[i].stock_quantity}`);
-      
-    }
+connection.connect(function (err) {
+  if (err) {
+    console.error('error connecting: ' + err.stack);
+    return;
+  }
   
-  });
+  managerView();
+});
 
-    } //end proudctArray()  
-  inquirer
-  .prompt([
-    {
-      type: 'list',
-      name: 'viewProducts',
-      message: 'View Products for Sale',
-      //query and put products in an array
-      choices: [ ]
+
+var inquirer = require('inquirer');
+var array = [
+  "View Products for Sale",
+  "View Low Inventory",
+  "Add to Inventory",
+  "Add New Product"
+];
+
+function managerView() {}
+inquirer.prompt([{
+    type: 'list',
+    name: 'manage',
+    message: 'Manager View Menu: Pick a task.',
+    choices: array,
+    filter: function (val) {
+      switch (val) {
+        case "View Products for Sale":
+          return forSale;
+        case "View Low Inventory":
+          return lowInv;
+        case "Add to Inventory":
+          return addInv;
+        case "Add New Product":
+          return addProduct;
+        default:
+          console.log(`Error detected.`)
+      }
     }
-    
-  ])
-  .then(answers => {
-    console.log(JSON.stringify(answers, null, '  '));
-  });
+  }
+
+]).then(answers => {
+  console.log(JSON.stringify(answers, null ,' '));
+});
