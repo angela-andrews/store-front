@@ -29,7 +29,9 @@ function managerView() {
           'View Products for Sale',
           'View Low Inventory',
           'Add to Inventory',
-          'Add New Product'
+          'Add New Product',
+          '(Exit Program)'
+
         ],
         filter: function (val) {
           //return val;
@@ -41,23 +43,36 @@ function managerView() {
             return 'addInventory';
           }else if (val ==='Add New Product'){
             return 'addNew';
-          }else {
+          }else if (val === '(Exit Program)'){
+            return 'quit';
+          }else  {
             console.error('Error: selection not programmed');
-            
+        
           }
         }
       }
 
     ]).then(choice => {
-      console.log(`Manager choice:`+  JSON.stringify(choice));
+      //console.log(`Manager choice:`+  JSON.stringify(choice));
         if(choice.manage === 'viewInventory'){
           viewProducts();
         }else if (choice.manage === 'lowInventory'){
-          viewLowInventory()
+          viewLowInventory();
         }else if(choice.manage === 'addInventory'){
-          addToInventory()
-        }else if(choice.manage ==='addNew' )
-        addNewProduct()
+          addToInventory();
+        }else if(choice.manage ==='addNew' ){
+          addNewProduct(); 
+        }else if(choice.manage === 'quit'){
+          console.log("Goodbye!")
+                connection.end();
+              
+                return;
+        }
+        
+        
+
+      
+
     });
   }; //end managerView();
 
