@@ -4,3 +4,4 @@ input.js
 node_modules
 bamazonCustomer-asyncawait.js
 bamazonCustomer-promise.js
+bamazonPromise.js
