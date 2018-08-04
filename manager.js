@@ -63,13 +63,21 @@ function managerView() {
 
   function viewProducts(){
     console.log(`view products function \n`);
+    //query db for every item: ID, Name, Price, Qty
   };
   function viewLowInventory(){
     console.log(`view low inventory function \n`);
+    //query DB and list items with count lower than 5
   };
   function addToInventory(){
     console.log(`view add to inventory function \n`);
+    //Inquirer list, show * and select an ID
+    //Update that items qty from 2nd prompt  
+    //This needs to be a promise
+
   };
   function addNewProduct(){
     console.log(`view add new product function \n`);
+    //another inquirer to add an item to the DB
+    // Update 3 inputs, Name, Price, Qty 
   };
