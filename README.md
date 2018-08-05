@@ -10,10 +10,11 @@ This is a Node.js command-line app that will track product inventory and allow c
 
 ## Requirements
  * [Node.js](https://nodejs.org/en/)
- * [Inquiere](https://www.npmjs.com/package/inquirer)
- * [MySql](https://www.npmjs.com/package/mysql)
+ * [Inquirer](https://www.npmjs.com/package/inquirer)
+ * [MySQL](https://www.npmjs.com/package/mysql)
+ * [MySQL Workbench](https://www.mysql.com/products/workbench/)
 
- ## Instructions
+
 
 
  
