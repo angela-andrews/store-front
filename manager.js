@@ -1,7 +1,8 @@
 var mysql = require('mysql');
 var inquirer = require('inquirer');
 var connection = require('./connection.js'); //mysql connection info
-var selectedID = null;
+var selectedId = null;
+var selectedQty = null;
 
 connection.connect(function (err) {
   if (err) {
@@ -12,7 +13,11 @@ connection.connect(function (err) {
 });
 
 managerView();
-
+/*
+=================================================
+Manager view only works up to View Low Inventory
+=================================================
+*/
 function managerView() {
 
   inquirer.prompt([{
@@ -134,54 +139,44 @@ function addToInventory() {
     }
 
   ];
-  inquirer.prompt(questions).then(answers => {
-    console.log(JSON.stringify(answers, null, '  '));
-  });
-  // var getId = [
+  return inquirer.prompt(questions)
+  .then(answers => {
+    //console.log(JSON.stringify(answers, null, '  '));
+    selectedId = parseInt(answers.id);
+    selectedQty = parseInt(answers.newQty);
+    console.log(`Selected ID:  ${selectedId}  Quantity ${selectedQty}`);
+    
+    connection.query("UPDATE products SET stock_quantity = stock_quantity + ?  WHERE item_id =?", [selectedId, selectedQty] , (err, res)=>{
+      if(err){
+        console.log(`Error: ${err}`);
+      }else{
+        console.log(res);
+        // console.log(`looooop`);
+        // console.log(`Quantity Update: Item ID: ${res[x].item_id} ||  ${res[x].product_name}  ||  ${res[x].stock_quantity} `);
 
-  //   {
-  //     type: 'input',
-  //     name: 'id',
-  //     message: "Enter the ID of the product to increase inventory:"
-  //   }]; 
-  //   inquirer.prompt(getId).then(item => {
-  //     selectedID = item.id;
-  //     //console.log(selectedID);
-  //   });
-  //   var updateQty = [
-  //     {
-  //       type: 'input',
-  //       name: 'newQty',
-  //       message: "How many would you like to add to inventory?"
-  //     }]; 
-  //     inquirer.prompt(updateQty).then(count => {
-  //       console.log(JSON.stringify(count, null, '  '));
+      }
+      
+    
+    } )//end connetion query
+      
 
-  //     });
-  //   return new Promise((resolve, reject) => {
-  //     connection.query("UPDATE bamazon.products SET stock_quantity = stock_quantity + ? WHERE item_id = ?",[] (err, res) => {
-  //         if (err) {
-  //             reject(err);
-  //             return;
-  //         }
-
-  //         for (var i = 0; i < res.length; i++) {
-  //             console.log(` Item ID: ${res[i].item_id} || ${res[i].product_name} || ${res[i].price}`)
-  //         }
-
-  //         products = res;
-  //         resolve(true);
-  //     });
-  // })
+  })   
+  
+    
+  
+    
+ 
+    
+}//end addToInventory();
 
 
-
-
-
-};
 
 function addNewProduct() {
   console.log(`view add new product function \n`);
   //another inquirer to add an item to the DB
   // Update 3 inputs, Name, Price, Qty 
 };
+
+// function separator(){
+//   console.log(`---------------------------------------------------`);
+// };
